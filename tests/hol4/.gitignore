@@ -1,0 +1,5 @@
+### HOL4
+.HOLMK/
+.hollogs/
+*.ui
+*.uo
