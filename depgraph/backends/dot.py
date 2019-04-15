@@ -75,7 +75,7 @@ class DotBackEnd(BackEnd):
         yield ''
 
         for i, cluster in enumerate(dep_graph.clusters):
-            yield 'subgraph cluster_%d {' % i
+            yield 'subgraph "cluster_%s" {' % cluster.name
             yield '  label="%s"' % cluster.name
 
             cluster_color = random_hex_color()

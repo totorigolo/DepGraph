@@ -4,4 +4,5 @@ from .transitive_reduction import TransitiveReduction
 MIDDLEWARES = [
     TransitiveReduction,
     ClusterRegex,
+    CondenseInterClustersEdges,
 ]
