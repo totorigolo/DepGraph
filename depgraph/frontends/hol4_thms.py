@@ -10,9 +10,13 @@ from ..utils import get_all_files_ending_with, OrderedSet, DefaultOrderedDict
 
 logger = logging.getLogger(__name__)
 
+thm_name_regex = re.compile('val +([^ ]+) *: *thm')
+val_stmt_regex = re.compile('val +([^ ]+) *=')
+prove_stmt_regex = re.compile('val\\s+([^ ]+)\\s*=\\s*prove', re.MULTILINE)
+store_stmt_regex = re.compile('val\\s+([^ ]+)\\s*=\\s*store_thm', re.MULTILINE)
 
-def _read_thm_names_in_file(theory_sig_file: str) -> Set[Tuple[str, str]]:
-    thm_name_regex = re.compile('val +([^ ]+) *: *thm')
+
+def _read_thm_names_in_sig_file(theory_sig_file: str) -> Set[Tuple[str, str]]:
     thm_names = OrderedSet()
     with open(theory_sig_file, 'r') as f:
         for line in f.readlines():
@@ -23,10 +27,35 @@ def _read_thm_names_in_file(theory_sig_file: str) -> Set[Tuple[str, str]]:
     return thm_names
 
 
-def _read_thm_names_in(theory_sig_files: List[str]) -> Set[Tuple[str, str]]:
+def _read_thm_names_in_sig_files(theory_sig_files: List[str]) \
+        -> Set[Tuple[str, str]]:
     thm_names = OrderedSet()
     for sig_file in theory_sig_files:
-        names_in_file = _read_thm_names_in_file(sig_file)
+        names_in_file = _read_thm_names_in_sig_file(sig_file)
+        thm_names |= names_in_file
+    return thm_names
+
+
+def _read_thm_names_in_sml_file(script_sml_file: str) -> Set[Tuple[str, str]]:
+    thm_names = OrderedSet()
+    with open(script_sml_file, 'r') as f:
+        for line in f.readlines():
+            prove_result = prove_stmt_regex.search(line)
+            store_result = store_stmt_regex.search(line)
+            if prove_result:
+                thm_name = prove_result.group(1)
+                thm_names.add((script_sml_file, thm_name))
+            if store_result:
+                thm_name = store_result.group(1)
+                thm_names.add((script_sml_file, thm_name))
+    return thm_names
+
+
+def _read_thm_names_in_sml_files(script_sml_files: List[str]) \
+        -> Set[Tuple[str, str]]:
+    thm_names = OrderedSet()
+    for sml_file in script_sml_files:
+        names_in_file = _read_thm_names_in_sml_file(sml_file)
         thm_names |= names_in_file
     return thm_names
 
@@ -44,11 +73,9 @@ def _read_dependencies_in_file(script_sml_file: str, thm_names: Set[str]) \
     # theorem name as a dependency.
     curr_thm = None
 
-    thm_block_regex = re.compile('val +([^ ]+) *=')
-
     with open(script_sml_file, 'r') as f:
         for line in f.readlines():
-            thm_block_result = thm_block_regex.search(line)
+            thm_block_result = val_stmt_regex.search(line)
             if thm_block_result:  # New theorem
                 curr_thm = thm_block_result.group(1)
                 if curr_thm == '_':
@@ -114,7 +141,9 @@ class Hol4ThmsFrontEnd(FrontEnd):
             get_all_files_ending_with(self.path, ['Script.sml'])))
 
         # Extract all theorem names from xxxTheory.sig files
-        thms = _read_thm_names_in(theory_sig_files)
+        sig_thms = _read_thm_names_in_sig_files(theory_sig_files)
+        sml_thms = _read_thm_names_in_sml_files(script_sml_files)
+        thms = sig_thms | sml_thms
         thm_names = set(thm_name for (file, thm_name) in thms)
 
         # Get the theorem locations
