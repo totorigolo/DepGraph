@@ -30,7 +30,7 @@ class HighlightAncestors(Middleware):
         )
 
     def transform(self, dep_graph: DependencyGraph) -> DependencyGraph:
-        logger.info("Highlighting ancestors of %s in %s.",
+        logger.info("Highlighting ancestors of %s in %s...",
                     self.root, self.color)
 
         if self.root not in dep_graph:

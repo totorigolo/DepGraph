@@ -29,7 +29,7 @@ class HighlightParents(Middleware):
         )
 
     def transform(self, dep_graph: DependencyGraph) -> DependencyGraph:
-        logger.info("Highlighting parent nodes in %s.", self.color)
+        logger.info("Highlighting parent nodes in %s...", self.color)
 
         node_ids = []
         for node_id in dep_graph.nodes:

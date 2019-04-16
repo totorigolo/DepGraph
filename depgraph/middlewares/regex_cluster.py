@@ -30,8 +30,9 @@ class ClusterRegex(Middleware):
 
     def transform(self, dep_graph: DependencyGraph) \
             -> DependencyGraph:
-
         for regex_str in self.regex_list:
+            logger.info("Clustering nodes with /%s/...", regex_str)
+
             cluster_ids = OrderedSet()
             compiled = re.compile(regex_str)
             for node_id, long_name in dep_graph.nodes('long_name'):
@@ -46,5 +47,7 @@ class ClusterRegex(Middleware):
 
                 cluster = Cluster(regex_str, subgraph)
                 dep_graph.clusters.add(cluster)
+
+            logger.info("Done")
 
         return dep_graph
