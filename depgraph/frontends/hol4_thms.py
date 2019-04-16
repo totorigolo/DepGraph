@@ -84,26 +84,23 @@ def _read_dependencies(script_sml_files: List[str], thm_names: Set[str]) \
 
 
 class Hol4ThmsFrontEnd(FrontEnd):
-    def __init__(self, config: Config):
+    def __init__(self, config: Config, args):
         super().__init__('HOL4 theorem hierarchy')
         self.config = config
-        self.path = config['hol4-thms-src-root']
+        self.path = args[0]
+        self.thm_path = args[1]
 
     @staticmethod
     def install_arg_parser(parser: ArgumentParser):
-        def store_callback(_parser, namespace, values, _option_string):
-            setattr(namespace, 'hol4-thms', True)
-            setattr(namespace, 'hol4-thms-src-root', values[0])
-            setattr(namespace, 'hol4-thms-thms-in', values[1])
-
         parser.add_argument(
             '--hol4-thms',
             dest='hol4-thms',
             required=False,
             default=False,
             action=make_frontend_action(Hol4ThmsFrontEnd,
-                                        callback=store_callback,
-                                        nargs=2))
+                                        nargs=2,
+                                        metavar=('SRC-ROOT', 'THM-ROOT'))
+        )
 
     def get_dependency_graph(self) -> DependencyGraph:
         logger.info("Generating dependency graph in: %s", self.path)
@@ -134,7 +131,7 @@ class Hol4ThmsFrontEnd(FrontEnd):
             node_attrs = {'long_name': long_name,
                           'pretty_name': thm_name}
 
-            if self.config['hol4-thms-thms-in'] not in theory_sig_file:
+            if self.thm_path not in theory_sig_file:
                 skipped_thms[thm_name] = node_attrs
             else:
                 graph.add_node(thm_name, **node_attrs)

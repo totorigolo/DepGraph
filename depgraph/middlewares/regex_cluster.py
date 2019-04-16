@@ -10,15 +10,10 @@ from ..dependency_graph import DependencyGraph, Cluster
 logger = logging.getLogger(__name__)
 
 
-def store_regex_action(_parser, namespace, values, _option_string):
-    setattr(namespace, 'cluster-regex', True)
-    setattr(namespace, 'cluster-regex-middleware-regex-list', values)
-
-
 class ClusterRegex(Middleware):
-    def __init__(self, config: Config):
+    def __init__(self, config: Config, regex_list):
         self.config = config
-        self.regex_list = config['cluster-regex-middleware-regex-list']
+        self.regex_list = regex_list
         super().__init__('Regex cluster [%s]' % ', '.join(
             '"%s"' % r for r in self.regex_list))
 
@@ -30,11 +25,12 @@ class ClusterRegex(Middleware):
             required=False,
             default=False,
             action=make_middleware_action(ClusterRegex,
-                                          callback=store_regex_action,
-                                          nargs='+'),
+                                          nargs='+', metavar='REGEX'),
         )
 
-    def transform(self, dep_graph: DependencyGraph) -> DependencyGraph:
+    def transform(self, dep_graph: DependencyGraph) \
+            -> DependencyGraph:
+
         for regex_str in self.regex_list:
             cluster_ids = OrderedSet()
             compiled = re.compile(regex_str)

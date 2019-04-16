@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class DotBackEnd(BackEnd):
-    def __init__(self, config: Config):
+    def __init__(self, config: Config, _args):
         super().__init__('GraphViz Dot')
         self.config = config
 
@@ -56,7 +56,17 @@ class DotBackEnd(BackEnd):
             except KeyError:
                 pretty_name = node_id
                 logger.warn('No "pretty_name" for node "%s".', node_id)
-            yield '{}[label="{}"]'.format(dot_id, pretty_name)
+
+            attrs = {'label': pretty_name}
+
+            if 'color' in node_attrs:
+                attrs['color'] = node_attrs['color']
+                attrs['style'] = 'filled'
+
+            yield '{id}[{attrs}]'.format(
+                id=dot_id,
+                attrs=' '.join('%s="%s"' % kv for kv in attrs.items())
+            )
 
         yield ''
         yield '# Edges'

@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 class NoBackEnd(BackEnd):
-    def __init__(self, config: Config):
+    def __init__(self, config: Config, _args):
         super().__init__('No backend')
         self.config = config
 

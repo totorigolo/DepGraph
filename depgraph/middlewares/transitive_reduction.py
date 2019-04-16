@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class TransitiveReduction(Middleware):
-    def __init__(self, config: Config):
+    def __init__(self, config: Config, _args):
         super().__init__('Transitive reduction')
         self.config = config
 
@@ -26,5 +26,9 @@ class TransitiveReduction(Middleware):
         )
 
     def transform(self, dep_graph: DependencyGraph) -> DependencyGraph:
+        logger.info("Computing transitive reduction...")
+
         reduced = nx.algorithms.transitive_reduction(dep_graph)
+
+        logger.info("Done.")
         return reduced

@@ -104,10 +104,10 @@ def _generate_short_filename_mapping(long_module_paths: Set[str]):
 
 
 class Hol4FrontEnd(FrontEnd):
-    def __init__(self, config: Config):
+    def __init__(self, config: Config, args):
         super().__init__('HOL4 from .uo files')
         self.config = config
-        self.path = config['hol4-src-root']
+        self.path = args[0]
 
     @staticmethod
     def install_arg_parser(parser: ArgumentParser):
@@ -122,7 +122,9 @@ class Hol4FrontEnd(FrontEnd):
             default=False,
             action=make_frontend_action(Hol4FrontEnd,
                                         callback=store_callback,
-                                        nargs=1))
+                                        nargs=1,
+                                        metavar='SRC-ROOT')
+        )
 
     def get_dependency_graph(self) -> DependencyGraph:
         logger.info("Generating dependency graph in: %s", self.path)

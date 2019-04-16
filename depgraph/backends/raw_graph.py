@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 class RawGraphBackEnd(BackEnd):
-    def __init__(self, config: Config):
+    def __init__(self, config: Config, _args):
         super().__init__('Raw graph')
         self.config = config
 

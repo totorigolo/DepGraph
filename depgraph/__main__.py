@@ -115,12 +115,13 @@ def main():
                 'You cannot specify more that one frontend (%s)' %
                 ', '.join("'%s'" % x[0] for x in config['frontend']))
         else:
-            frontend = config['frontend'][0][1](config)
+            frontend_conf = config['frontend'][0]
+            frontend = frontend_conf[1](config, frontend_conf[2])
             logger.info('Using front-end: %s', frontend.frontend_name)
     except KeyError:
         parser.error('You must specify one frontend.')
     try:  # middlewares
-        middlewares = list(x[1](config) for x in config['middlewares'])
+        middlewares = list(x[1](config, x[2]) for x in config['middlewares'])
         logger.info('Using middlewares: %s' %
                     ', '.join(mw.middleware_name for mw in middlewares))
     except KeyError:
@@ -132,7 +133,8 @@ def main():
                 'You cannot specify more that one backend (%s)' %
                 ', '.join('"%s"' % x[0] for x in config['backend']))
         else:
-            backend = config['backend'][0][1](config)
+            backend_conf = config['backend'][0]
+            backend = backend_conf[1](config, backend_conf[2])
             logger.info('Using back-end: %s', backend.backend_name)
     except KeyError:
         logger.info('No backend specified. Defaulting to raw graph output.')

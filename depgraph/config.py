@@ -3,16 +3,16 @@ from collections import OrderedDict
 
 
 def make_pipeline_action(pipeline_stage: str, action_class,
-                         callback=None, nargs=0):
+                         callback=None, nargs=0, **kwargs):
     class PipelineAction(argparse.Action):
         def __init__(self, **kw):
-            super().__init__(nargs=nargs, **kw)
+            super().__init__(nargs=nargs, **kw, **kwargs)
 
         def __call__(self, parser, namespace, values, option_string=None):
             if pipeline_stage not in namespace:
                 setattr(namespace, pipeline_stage, [])
             previous = getattr(namespace, pipeline_stage)
-            previous.append((self.dest, action_class))
+            previous.append((self.dest, action_class, values))
             setattr(namespace, pipeline_stage, previous)
             if callback:
                 callback(parser, namespace, values, option_string)
