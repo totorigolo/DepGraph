@@ -1,6 +1,7 @@
 from .highlight_ancestors import HighlightAncestors
 from .highlight_parents import HighlightParents
 from .regex_cluster import ClusterRegex
+from .remove_parents import RemoveParents
 from .transitive_reduction import TransitiveReduction
 
 MIDDLEWARES = [
@@ -8,4 +9,5 @@ MIDDLEWARES = [
     ClusterRegex,
     HighlightAncestors,
     HighlightParents,
+    RemoveParents,
 ]
