@@ -111,8 +111,8 @@ def get_all_files_ending_with(base_path, endings, filter_regex_str=None):
         for f in sorted(files):
             absolute_path = os.path.abspath(path)
             absolute_file_path = "/".join((absolute_path, f))
-            if compiled_path_regex and not compiled_path_regex.search(
-                    absolute_file_path):
+            if (compiled_path_regex
+                    and not compiled_path_regex.search(absolute_file_path)):
                 continue
             if any(f.endswith(ending) for ending in endings):
                 result.append(absolute_file_path)
