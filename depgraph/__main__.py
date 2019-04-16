@@ -157,8 +157,11 @@ def main():
         with open(config['output'], 'w') as dot_file:
             dot_file.writelines(output)
     else:
-        for line in output:
-            print(line)
+        try:
+            for line in output:
+                print(line, file=sys.stdout)
+        except BrokenPipeError:
+            exit(0)
 
 
 if __name__ == '__main__':
