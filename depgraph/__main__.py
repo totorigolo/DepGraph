@@ -13,14 +13,6 @@ logger = logging.getLogger(__name__)
 
 
 def configure_parser(parser: ArgumentParser):
-    # Positional arguments
-    parser.add_argument(
-        'src-root',
-        type=str,
-        help='The source root where Holmake .uo files will be recursively '
-             'looked-up '
-    )
-
     # Optional arguments
     parser.add_argument(
         '--random-seed',

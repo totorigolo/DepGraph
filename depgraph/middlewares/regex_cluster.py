@@ -10,7 +10,8 @@ from ..dependency_graph import DependencyGraph, Cluster
 logger = logging.getLogger(__name__)
 
 
-def store_regex_action(parser, namespace, values, option_string):
+def store_regex_action(_parser, namespace, values, _option_string):
+    setattr(namespace, 'cluster-regex', True)
     setattr(namespace, 'cluster-regex-middleware-regex-list', values)
 
 

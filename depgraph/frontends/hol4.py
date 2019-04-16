@@ -107,17 +107,22 @@ class Hol4FrontEnd(FrontEnd):
     def __init__(self, config: Config):
         super().__init__('HOL4 from .uo files')
         self.config = config
-        self.path = config['src-root']
+        self.path = config['hol4-src-root']
 
     @staticmethod
     def install_arg_parser(parser: ArgumentParser):
+        def store_callback(_parser, namespace, values, _option_string):
+            setattr(namespace, 'hol4', True)
+            setattr(namespace, 'hol4-src-root', values[0])
+
         parser.add_argument(
             '--hol4',
             dest='hol4',
             required=False,
             default=False,
-            action=make_frontend_action(Hol4FrontEnd),
-        )
+            action=make_frontend_action(Hol4FrontEnd,
+                                        callback=store_callback,
+                                        nargs=1))
 
     def get_dependency_graph(self) -> DependencyGraph:
         logger.info("Generating dependency graph in: %s", self.path)
