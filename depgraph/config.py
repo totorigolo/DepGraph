@@ -32,4 +32,5 @@ class Config(OrderedDict):
         super().__init__(sorted_dict, **kwargs)
 
     def __str__(self):
-        return '\n'.join('- %s: %s' % x for x in self.items())
+        return '\n'.join('- %s: %s' % (name, value)
+                         for name, value in self.items() if value is not None)

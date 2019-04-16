@@ -19,9 +19,7 @@ class DotBackEnd(BackEnd):
     def install_arg_parser(parser: ArgumentParser):
         parser.add_argument(
             '--as-dot',
-            dest='as-dot',
             required=False,
-            default=False,
             action=make_backend_action(DotBackEnd)
         )
         parser.add_argument(

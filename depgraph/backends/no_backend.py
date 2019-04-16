@@ -18,9 +18,7 @@ class NoBackEnd(BackEnd):
     def install_arg_parser(parser: ArgumentParser):
         parser.add_argument(
             '--no-backend',
-            dest='no-backend',
             required=False,
-            default=False,
             action=make_backend_action(NoBackEnd)
         )
 

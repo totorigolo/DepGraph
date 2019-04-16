@@ -21,9 +21,7 @@ class ClusterRegex(Middleware):
     def install_arg_parser(parser: ArgumentParser):
         parser.add_argument(
             '--cluster-regex',
-            dest='cluster-regex',
             required=False,
-            default=False,
             action=make_middleware_action(ClusterRegex,
                                           nargs='+', metavar='REGEX'),
         )

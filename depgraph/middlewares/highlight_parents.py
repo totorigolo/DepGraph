@@ -20,9 +20,7 @@ class HighlightParents(Middleware):
     def install_arg_parser(parser: ArgumentParser):
         parser.add_argument(
             '--highlight-parents',
-            dest='highlight-parents',
             required=False,
-            default=False,
             action=make_middleware_action(HighlightParents,
                                           nargs=1,
                                           metavar='COLOR'),

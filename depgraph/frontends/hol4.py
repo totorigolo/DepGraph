@@ -117,9 +117,7 @@ class Hol4FrontEnd(FrontEnd):
 
         parser.add_argument(
             '--hol4',
-            dest='hol4',
             required=False,
-            default=False,
             action=make_frontend_action(Hol4FrontEnd,
                                         callback=store_callback,
                                         nargs=1,

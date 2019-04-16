@@ -19,9 +19,7 @@ class TransitiveReduction(Middleware):
     def install_arg_parser(parser: ArgumentParser):
         parser.add_argument(
             '--transitive-reduction',
-            dest='transitive-reduction',
             required=False,
-            default=False,
             action=make_middleware_action(TransitiveReduction),
         )
 

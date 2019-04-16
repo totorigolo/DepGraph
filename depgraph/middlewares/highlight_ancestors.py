@@ -21,9 +21,7 @@ class HighlightAncestors(Middleware):
     def install_arg_parser(parser: ArgumentParser):
         parser.add_argument(
             '--highlight-ancestors',
-            dest='highlight-ancestors',
             required=False,
-            default=False,
             action=make_middleware_action(HighlightAncestors,
                                           nargs=2,
                                           metavar=('NODE', 'COLOR')),

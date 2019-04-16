@@ -18,9 +18,7 @@ class RawGraphBackEnd(BackEnd):
     def install_arg_parser(parser: ArgumentParser):
         parser.add_argument(
             '--as-raw-graph',
-            dest='as-raw-graph',
             required=False,
-            default=False,
             action=make_backend_action(RawGraphBackEnd)
         )
 

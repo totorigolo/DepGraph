@@ -121,9 +121,7 @@ class Hol4ThmsFrontEnd(FrontEnd):
     def install_arg_parser(parser: ArgumentParser):
         parser.add_argument(
             '--hol4-thms',
-            dest='hol4-thms',
             required=False,
-            default=False,
             action=make_frontend_action(Hol4ThmsFrontEnd,
                                         nargs=2,
                                         metavar=('SRC-ROOT', 'THM-ROOT'))
