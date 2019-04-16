@@ -33,6 +33,8 @@ class DotBackEnd(BackEnd):
         )
 
     def convert(self, dep_graph: DependencyGraph) -> Iterable[str]:
+        logger.info("Exporting as DOT file...")
+
         yield 'digraph G {'
 
         yield 'graph [compound=true];'
@@ -88,3 +90,4 @@ class DotBackEnd(BackEnd):
             yield '}'
 
         yield '}'
+        logger.info("Done.")

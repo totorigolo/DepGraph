@@ -120,7 +120,7 @@ class Hol4FrontEnd(FrontEnd):
         )
 
     def get_dependency_graph(self) -> DependencyGraph:
-        logger.info("Generating dependency graph in: {}".format(self.path))
+        logger.info("Generating dependency graph in: %s", self.path)
 
         # Get all Holmake dependency files
         holmake_dep_exts = ['.uo']
@@ -201,4 +201,5 @@ class Hol4FrontEnd(FrontEnd):
             if len(graph.adj[filtered_dependency]) == 0:
                 graph.remove_node(filtered_dependency)
 
+        logger.info("Done.")
         return graph
