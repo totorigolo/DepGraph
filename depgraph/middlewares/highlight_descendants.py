@@ -12,10 +12,11 @@ logger = logging.getLogger(__name__)
 
 class HighlightDescendants(Middleware):
     def __init__(self, config: Config, args):
-        super().__init__('Highlight descendants')
         self.config = config
         self.root = args[0]
         self.color = args[1]
+        super().__init__('Highlight descendants of "%s" in %s'
+                         % (self.root, self.color))
 
     @staticmethod
     def install_arg_parser(parser: ArgumentParser):

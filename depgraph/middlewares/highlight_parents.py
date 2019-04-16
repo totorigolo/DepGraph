@@ -12,9 +12,9 @@ logger = logging.getLogger(__name__)
 
 class HighlightParents(Middleware):
     def __init__(self, config: Config, args):
-        super().__init__('Highlight parent nodes')
         self.config = config
         self.color = args[0]
+        super().__init__('Highlight parent nodes in %s' % self.color)
 
     @staticmethod
     def install_arg_parser(parser: ArgumentParser):
