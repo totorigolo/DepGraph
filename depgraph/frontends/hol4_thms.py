@@ -57,6 +57,21 @@ def _read_thm_names_in_sml_files(script_sml_files: List[str]) \
     for sml_file in script_sml_files:
         names_in_file = _read_thm_names_in_sml_file(sml_file)
         thm_names |= names_in_file
+
+    forbidden_names = {'thm', 'lemma'}
+    for i in range(20):
+        forbidden_names.add('thm%d' % i)
+        forbidden_names.add('thm_%d' % i)
+        forbidden_names.add('lemma%d' % i)
+        forbidden_names.add('lemma_%d' % i)
+
+    to_remove = []
+    for file, name in thm_names:
+        if name in forbidden_names:
+            to_remove.append((file, name))
+    for x in to_remove:
+        thm_names.remove(x)
+
     return thm_names
 
 
@@ -77,9 +92,12 @@ def _read_dependencies_in_file(script_sml_file: str, thm_names: Set[str]) \
         for line in f.readlines():
             thm_block_result = val_stmt_regex.search(line)
             if thm_block_result:  # New theorem
-                curr_thm = thm_block_result.group(1)
-                if curr_thm == '_':
-                    curr_thm = None
+                curr_thm_candidate = thm_block_result.group(1)
+                if curr_thm_candidate in thm_names:
+                    if curr_thm == '_':
+                        curr_thm = None
+                    else:
+                        curr_thm = curr_thm_candidate
                 # else:
                 #     logger.debug('New curr_thm: %s', curr_thm)
             # no `else` because of one-liners
@@ -153,25 +171,33 @@ class Hol4ThmsFrontEnd(FrontEnd):
         # Generate the dependency graph
         graph = DependencyGraph()
         skipped_thms = dict()
-        for theory_sig_file, thm_name in thms:
-            long_name = '::'.join([theory_sig_file[:-10], thm_name])
+        for file_path, thm_name in thms:
+            long_name = '::'.join([file_path[:-10], thm_name])
             node_attrs = {'long_name': long_name,
                           'pretty_name': thm_name}
 
-            if self.thm_path not in theory_sig_file:
+            if self.thm_path not in file_path:
                 skipped_thms[thm_name] = node_attrs
             else:
                 graph.add_node(thm_name, **node_attrs)
 
         for (script_sml_file, thm_name), dep_names in thm_dependencies.items():
             # long_name = '::'.join([script_sml_file[:-10], thm_name])
+            if thm_name not in thm_names:
+                logger.warn('Skipping dependencies of: %s', thm_name)
             for dep_name in dep_names:
-                if thm_name in graph.nodes:
-                    graph.add_edge(thm_name, dep_name)
-                    if dep_name in skipped_thms:
-                        node_attrs = skipped_thms[dep_name]
-                        graph.add_node(dep_name, **node_attrs)
-                        del node_attrs
+                if dep_name not in thm_names:
+                    logger.warn('Skipping dependency: %s -> %s',
+                                thm_name, dep_name)
+                graph.add_edge(thm_name, dep_name)
+                if dep_name in skipped_thms:
+                    node_attrs = skipped_thms[dep_name]
+                    graph.add_node(dep_name, **node_attrs)
+                    del node_attrs
+                if thm_name in skipped_thms:
+                    node_attrs = skipped_thms[thm_name]
+                    graph.add_node(thm_name, **node_attrs)
+                    del node_attrs
 
         logger.info("Done.")
         return graph
