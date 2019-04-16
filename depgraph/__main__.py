@@ -122,8 +122,9 @@ def main():
         parser.error('You must specify one frontend.')
     try:  # middlewares
         middlewares = list(x[1](config, x[2]) for x in config['middlewares'])
-        logger.info('Using middlewares: %s' %
-                    ', '.join(mw.middleware_name for mw in middlewares))
+        logger.info('Using middlewares: \n%s' %
+                    '\n'.join(' %d. %s' % (i + 1, mw.middleware_name)
+                              for i, mw in enumerate(middlewares)))
     except KeyError:
         logger.info('No middleware.')
     try:  # backend
