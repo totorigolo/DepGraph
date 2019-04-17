@@ -25,7 +25,7 @@ class RawGraphBackEnd(BackEnd):
     def convert(self, dep_graph: DependencyGraph) -> Iterable[str]:
         yield len(dep_graph.nodes())
         for node_id, node_attrs in dep_graph.nodes.items():
-            yield node_id
+            yield 'NODE %s' % node_id
             yield str(node_attrs)
             yield len(dep_graph.adj[node_id])
             for dep in dep_graph.adj[node_id]:
