@@ -165,6 +165,8 @@ class Hol4ThmsFrontEnd(FrontEnd):
         self.config = config
         self.path = args[0]
         self.thm_path = args[1]
+        if self.thm_path[-1] != '/':
+            self.thm_path = '%s/' % self.thm_path
         super().__init__('HOL4 theorem hierarchy in %s of %s'
                          % (self.path, self.thm_path))
 
