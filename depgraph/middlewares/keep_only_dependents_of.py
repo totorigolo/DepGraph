@@ -10,30 +10,31 @@ from ..dependency_graph import DependencyGraph
 logger = logging.getLogger(__name__)
 
 
-class RemoveAncestorsOf(Middleware):
+class KeepOnlyDependentsOf(Middleware):
     def __init__(self, config: Config, args):
         self.config = config
         self.root = args[0]
-        super().__init__('Remove ancestors of "%s"' % self.root)
+        super().__init__('Keep only dependents of "%s"' % self.root)
 
     @staticmethod
     def install_arg_parser(parser: ArgumentParser):
         parser.add_argument(
-            '--remove-ancestors-of',
+            '--keep-only-dependents-of',
             required=False,
-            action=make_middleware_action(RemoveAncestorsOf,
+            action=make_middleware_action(KeepOnlyDependentsOf,
                                           nargs=1, metavar='NODE'),
         )
 
     def transform(self, dep_graph: DependencyGraph) -> DependencyGraph:
-        logger.info("Removing ancestors of %s...", self.root)
+        logger.info("Keeping only dependents of %s...", self.root)
 
         if self.root not in dep_graph:
             logger.error('No node "%s" in the graph.', self.root)
             exit(1)
 
-        ancestors = nx.ancestors(dep_graph, self.root)
-        dep_graph.remove_nodes_from(ancestors)
+        dependents = nx.ancestors(dep_graph, self.root)
+        dep_graph.remove_nodes_from(
+            n for n in list(dep_graph.nodes) if n not in dependents)
 
         logger.info("Done.")
         return dep_graph
