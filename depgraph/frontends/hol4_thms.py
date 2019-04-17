@@ -200,7 +200,11 @@ class Hol4ThmsFrontEnd(FrontEnd):
         # thm_locations = _get_thm_locations(script_sml_files, thm_names)
 
         # Read dependencies from xxxScript.sml files
-        thm_dependencies = _read_dependencies(script_sml_files, thm_ids)
+        thm_path_script_sml_files = list(filter(
+            lambda f: '.hollogs' not in f,
+            get_all_files_ending_with(self.thm_path, ['Script.sml'])))
+        thm_dependencies = _read_dependencies(
+            thm_path_script_sml_files, thm_ids)
 
         # Generate the dependency graph
         graph = DependencyGraph()
