@@ -37,5 +37,11 @@ class TransitiveReduction(Middleware):
 
         reduced = nx.algorithms.transitive_reduction(dep_graph)
 
+        if not isinstance(reduced, DependencyGraph):
+            logger.critical('You should apply the patch fixing '
+                            'networkx.transitive_reduction.')
+        else:
+            reduced.clusters = dep_graph.clusters
+
         logger.info("Done.")
         return reduced
