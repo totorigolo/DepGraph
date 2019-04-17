@@ -26,6 +26,15 @@ class TransitiveReduction(Middleware):
     def transform(self, dep_graph: DependencyGraph) -> DependencyGraph:
         logger.info("Computing transitive reduction...")
 
+        if not nx.is_directed_acyclic_graph(dep_graph):
+            logger.critical(
+                "Directed Acyclic Graph required for transitive_reduction.")
+
+            cycle = nx.find_cycle(dep_graph)
+            logger.critical('Cycle found: %s', cycle)
+
+            exit(1)
+
         reduced = nx.algorithms.transitive_reduction(dep_graph)
 
         logger.info("Done.")
