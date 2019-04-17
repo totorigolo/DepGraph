@@ -10,7 +10,7 @@ from ..dependency_graph import DependencyGraph
 logger = logging.getLogger(__name__)
 
 
-class HighlightDescendants(Middleware):
+class HighlightDescendantsOf(Middleware):
     def __init__(self, config: Config, args):
         self.config = config
         self.root = args[0]
@@ -23,7 +23,7 @@ class HighlightDescendants(Middleware):
         parser.add_argument(
             '--highlight-descendants',
             required=False,
-            action=make_middleware_action(HighlightDescendants,
+            action=make_middleware_action(HighlightDescendantsOf,
                                           nargs=2,
                                           metavar=('NODE', 'COLOR')),
         )
