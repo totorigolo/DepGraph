@@ -130,10 +130,11 @@ def _read_dependencies(script_sml_files: List[str], thm_names: Set[str]) \
 
 class Hol4ThmsFrontEnd(FrontEnd):
     def __init__(self, config: Config, args):
-        super().__init__('HOL4 theorem hierarchy')
         self.config = config
         self.path = args[0]
         self.thm_path = args[1]
+        super().__init__('HOL4 theorem hierarchy in %s of %s'
+                         % (self.path, self.thm_path))
 
     @staticmethod
     def install_arg_parser(parser: ArgumentParser):
@@ -146,7 +147,8 @@ class Hol4ThmsFrontEnd(FrontEnd):
         )
 
     def get_dependency_graph(self) -> DependencyGraph:
-        logger.info("Generating dependency graph in: %s", self.path)
+        logger.info("Generating theorem hierarchy graph in %s of %s...",
+                    self.path, self.thm_path)
 
         # Get the list of all xxxTheory.sig and xxxScript.sml files
         theory_sig_files = list(filter(
