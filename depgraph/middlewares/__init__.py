@@ -1,8 +1,8 @@
 from .cluster_regex import ClusterRegex
-from .highlight_ancestors_of import HighlightAncestorsOf
-from .highlight_children import HighlightChildren
-from .highlight_descendants_of import HighlightDescendantsOf
-from .highlight_parents import HighlightParents
+from .highlight_dependencies_of import HighlightDependenciesOf
+from .highlight_dependents_of import HighlightDependentsOf
+from .highlight_leafs import HighlightLeafs
+from .highlight_roots import HighlightRoots
 from .keep_only_ancestors_of import KeepOnlyAncestorsOf
 from .keep_only_descendants_of import KeepOnlyDescendantsOf
 from .remove_ancestors_of import RemoveAncestorsOf
@@ -13,10 +13,10 @@ from .transitive_reduction import TransitiveReduction
 
 MIDDLEWARES = [
     ClusterRegex,
-    HighlightAncestorsOf,
-    HighlightChildren,
-    HighlightDescendantsOf,
-    HighlightParents,
+    HighlightDependenciesOf,
+    HighlightDependentsOf,
+    HighlightLeafs,
+    HighlightRoots,
     KeepOnlyAncestorsOf,
     KeepOnlyDescendantsOf,
     RemoveAncestorsOf,

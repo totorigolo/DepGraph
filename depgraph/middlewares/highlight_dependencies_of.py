@@ -10,26 +10,26 @@ from ..dependency_graph import DependencyGraph
 logger = logging.getLogger(__name__)
 
 
-class HighlightDescendantsOf(Middleware):
+class HighlightDependenciesOf(Middleware):
     def __init__(self, config: Config, args):
         self.config = config
         self.root = args[0]
         self.color = args[1]
-        super().__init__('Highlight descendants of "%s" in %s'
+        super().__init__('Highlight dependencies of "%s" in %s'
                          % (self.root, self.color))
 
     @staticmethod
     def install_arg_parser(parser: ArgumentParser):
         parser.add_argument(
-            '--highlight-descendants',
+            '--highlight-dependencies-of',
             required=False,
-            action=make_middleware_action(HighlightDescendantsOf,
+            action=make_middleware_action(HighlightDependenciesOf,
                                           nargs=2,
                                           metavar=('NODE', 'COLOR')),
         )
 
     def transform(self, dep_graph: DependencyGraph) -> DependencyGraph:
-        logger.info('Highlighting descendants of "%s" in %s...',
+        logger.info('Highlighting dependencies of "%s" in %s...',
                     self.root, self.color)
 
         if self.root not in dep_graph:
@@ -38,8 +38,8 @@ class HighlightDescendantsOf(Middleware):
 
         attr = {'color': self.color}
         nx.set_node_attributes(dep_graph, {self.root: attr})
-        for descendant in nx.descendants(dep_graph, self.root):
-            nx.set_node_attributes(dep_graph, {descendant: attr})
+        for dependency in nx.descendants(dep_graph, self.root):
+            nx.set_node_attributes(dep_graph, {dependency: attr})
 
         logger.info("Done.")
         return dep_graph

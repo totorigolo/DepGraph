@@ -10,28 +10,28 @@ from ..dependency_graph import DependencyGraph
 logger = logging.getLogger(__name__)
 
 
-class HighlightChildren(Middleware):
+class HighlightRoots(Middleware):
     def __init__(self, config: Config, args):
         self.config = config
         self.color = args[0]
-        super().__init__('Highlight child nodes in %s' % self.color)
+        super().__init__('Highlight root nodes in %s' % self.color)
 
     @staticmethod
     def install_arg_parser(parser: ArgumentParser):
         parser.add_argument(
-            '--highlight-children',
+            '--highlight-roots',
             required=False,
-            action=make_middleware_action(HighlightChildren,
+            action=make_middleware_action(HighlightRoots,
                                           nargs=1,
                                           metavar='COLOR'),
         )
 
     def transform(self, dep_graph: DependencyGraph) -> DependencyGraph:
-        logger.info("Highlighting child nodes in %s...", self.color)
+        logger.info("Highlighting root nodes in %s...", self.color)
 
         node_ids = []
         for node_id in dep_graph.nodes:
-            if len(nx.descendants(dep_graph, node_id)) == 0:
+            if len(nx.ancestors(dep_graph, node_id)) == 0:
                 node_ids.append(node_id)
 
         attrs = {node_id: {'color': self.color} for node_id in node_ids}
