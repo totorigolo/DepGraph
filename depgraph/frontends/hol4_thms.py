@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 
 ThmId = NewType('ThmId', str)
 
+def_suffix_regex = re.compile('_def$', re.IGNORECASE)
 comment_regex = re.compile("\\(\\*.*?\\*\\)", re.DOTALL)
 thm_name_regex = re.compile('val +([^ ]+) *: *thm')
 new_name_regex = re.compile(
@@ -21,7 +22,7 @@ new_name_regex = re.compile(
 
 def _remove_comments(lines: List[str]) -> List[str]:
     text = '\n'.join(lines)
-    stripped = re.sub(comment_regex, "", text)
+    stripped = re.sub(comment_regex, '', text)
     yield from stripped.split('\n')
 
 
@@ -41,8 +42,7 @@ class Thm:
 
 def _id_of_thm_name(thm_name: str) -> ThmId:
     thm_id = thm_name
-    thm_id = thm_id.replace('_def', '')
-    thm_id = thm_id.replace('_DEF', '')
+    thm_id = re.sub(def_suffix_regex, '', thm_id)
     return ThmId(thm_id)
 
 
