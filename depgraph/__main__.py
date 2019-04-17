@@ -139,7 +139,7 @@ def main():
             logger.info('Using back-end: %s', backend.backend_name)
     except KeyError:
         logger.info('No backend specified. Defaulting to raw graph output.')
-        backend = RawGraphBackEnd(config)
+        backend = RawGraphBackEnd(config, None)
 
     assert frontend is not None
     assert isinstance(middlewares, list)
