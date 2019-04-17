@@ -6,6 +6,7 @@ from argparse import ArgumentParser
 
 from .backends import BACK_ENDS, RawGraphBackEnd
 from .config import Config
+from .dependency_graph import DependencyGraph
 from .frontends import FRONT_ENDS
 from .middlewares import MIDDLEWARES
 
@@ -151,6 +152,16 @@ def main():
     # Transform it using middlewares
     for middleware in middlewares:
         dep_graph = middleware.transform(dep_graph)
+
+    # TODO: This should go somewhere else
+    # Fix clusters
+    if isinstance(dep_graph, DependencyGraph):
+        for cluster in dep_graph.clusters:
+            removed_nodes = set()
+            for node in cluster:
+                if node not in dep_graph.nodes:
+                    removed_nodes.add(node)
+            cluster.remove_nodes_from(removed_nodes)
 
     # Get the output from the backend
     output = backend.convert(dep_graph)
