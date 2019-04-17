@@ -29,7 +29,7 @@ class HighlightDescendantsOf(Middleware):
         )
 
     def transform(self, dep_graph: DependencyGraph) -> DependencyGraph:
-        logger.info("Highlighting descendants of %s in %s...",
+        logger.info('Highlighting descendants of "%s" in %s...',
                     self.root, self.color)
 
         if self.root not in dep_graph:
